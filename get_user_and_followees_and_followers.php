@@ -9,7 +9,7 @@
 require_once './spider/user.php';
 require_once './function.php';
 require_once './spider/curl.php';
-require_once './spider/pdo_mysql.php';
+require_once './spider/mongo_collection.php';
 require_once './spider/predis.php';
 
 //redis instance

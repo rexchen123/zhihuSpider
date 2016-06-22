@@ -6,12 +6,12 @@
  * @Last Modified time: 2015-09-08 17:36:07
  */
 class PRedis {
-	
+
 	public static function getInstance()
 	{
 		static $instances = array();
 		$key = getmypid();
-		if (empty($instances[$key]))
+		if (empty($instances[$key]) || $instances[$key]->ping() != "PONG")
 		{
 			$instances[$key] = new Redis();
 

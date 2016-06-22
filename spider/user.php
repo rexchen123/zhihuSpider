@@ -19,9 +19,8 @@ class User {
 	 */
 	public static function existed($params, $table)
 	{
-		$tmp_pdo = PDO_MySQL::getInstance();
-		$result = $tmp_pdo->count($table, $params);
-		$tmp_pdo = null;
+		$collection = new Mongo_Collection($table);
+		$result = $collection->count($params);
 		return $result;
 	}
 
@@ -31,19 +30,15 @@ class User {
 	 */
 	public static function add($params)
 	{
-		$tmp_pdo = PDO_MySQL::getInstance();
-		$existed_params = array(
-			'where' => array(
-				'u_id' => $params['u_id']
-			)
-		);
+		$collection = new Mongo_Collection(self::TABLE_NAME);
+		$existed_params = [
+			'u_id' => $params['u_id']
+		];
 		if (self::existed($existed_params, self::TABLE_NAME))
 		{
 			return;
 		}
-		$params['id'] = '';
-		$result = $tmp_pdo->insert(self::TABLE_NAME, $params);
-		$tmp_pdo = null;
+		$result = $collection->insert($params);
 		return $result;
 	}
 
@@ -53,12 +48,8 @@ class User {
 	 */
 	public static function addMulti($data)
 	{
-		$tmp_pdo = PDO_MySQL::getInstance();
-		$fields = array('u_id', 'u_name', 'address', 'img_url', 'business', 'gender', 'education', 'major', 'description',
-			'followees_count', 'followers_count', 'special_count', 'follow_topic_count', 'pv_count', 'approval_count', 'thank_count',
-			'ask_count', 'answer_count', 'started_count', 'public_edit_count', 'article_count', 'duplicate_count');
-		$result = $tmp_pdo->insertAll(self::TABLE_NAME, $fields, $data, 1);
-		$tmp_pdo = null;
+		$collection = new Mongo_Collection(self::TABLE_NAME);
+		$result = $collection->insertAll($data);
 		return $result;
 	}
 
@@ -69,19 +60,16 @@ class User {
 	 */
 	public static function info($u_id)
 	{
-		$tmp_pdo = PDO_MySQL::getInstance();
-		$params = array(
-			'where' => array(
-				'u_id' => $u_id
-			)
-		);
+		$collection = new Mongo_Collection(self::TABLE_NAME);
+		$existed_params = [
+			'u_id' => $u_id
+		];
 
-		$result = $tmp_pdo->getOneRow(self::TABLE_NAME, $params);
+		$result = $collection->findOne($existed_params);
 		if (empty($result))
 		{
 			echo "--------user $u_id not existed--------\n";
 		}
-		$tmp_pdo = null;
 		return $result;
 	}
 
@@ -92,10 +80,8 @@ class User {
 	public static function addFollowList($user_follow_list)
 	{
 		echo "--------start adding user follow relation--------\n";
-		$tmp_pdo = PDO_MySQL::getInstance();
-		$fields = array('id', 'u_id', 'u_name', 'u_follow_id', 'u_follow_name');
-		$result = $tmp_pdo->insertAll(self::FOLLOW_TABLE_NAME, $fields, $user_follow_list, 1);
-		$tmp_pdo = null;
+		$collection = new Mongo_Collection(self::FOLLOW_TABLE_NAME);
+		$result = $collection->insertAll($user_follow_list);
 		echo "--------add user follow relation done--------\n";
 		return $result;
 	}
@@ -108,19 +94,11 @@ class User {
 	 */
 	public static function getFollowUserList($u_id, $page)
 	{
-		$tmp_pdo = PDO_MySQL::getInstance();
-		$params = array(
-			'where' => array(
-				'u_id' => $u_id,
-			),
-			'limit' => 20
-		);
-		if ($page != 1)
-		{
-			$params['offset'] = ($page - 1) * 20;
-		}
-		$result = $tmp_pdo->getAll(self::FOLLOW_TABLE_NAME, $params);
-		$tmp_pdo = null;
+		$collection = new Mongo_Collection(self::FOLLOW_TABLE_NAME);
+		$params = [
+			'u_id' => $u_id,
+		];
+		$result = $collection->find($params, $page);
 		return $result;
 	}
 
@@ -131,14 +109,11 @@ class User {
 	 */
 	public static function getFolloweeCount($u_id)
 	{
-		$tmp_pdo = PDO_MySQL::getInstance();
-		$params = array(
-			'where' => array(
-				'u_id' => $u_id
-			)
-		);
-		$result = $tmp_pdo->count(self::FOLLOW_TABLE_NAME, $params);
-		$tmp_pdo = null;
+		$collection = new Mongo_Collection(self::FOLLOW_TABLE_NAME);
+		$params = [
+			'u_id' => $u_id
+		];
+		$result = $collection->count($params);
 		return $result;
 	}
 
@@ -149,14 +124,11 @@ class User {
 	 */
 	public static function getFollowerCount($u_id)
 	{
-		$tmp_pdo = PDO_MySQL::getInstance();
-		$params = array(
-			'where' => array(
+		$collection = new Mongo_Collection(self::FOLLOW_TABLE_NAME);
+		$params = [
 				'u_follow_id' => $u_id
-			)
-		);
-		$result = $tmp_pdo->count(self::FOLLOW_TABLE_NAME, $params);
-		$tmp_pdo = null;
+		];
+		$result = $collection->count($params);
 		return $result;
 	}
 
@@ -166,22 +138,18 @@ class User {
 	 */
 	public static function totalCount()
 	{
-		$tmp_pdo = PDO_MySQL::getInstance();
-		$result = $tmp_pdo->count(self::TABLE_NAME, array());
-		$tmp_pdo = null;
+		$collection = new Mongo_Collection(self::TABLE_NAME);
+		$result = $collection->count(array());
 		return $result;
 	}
 
 	public static function update($user_data, $u_id)
 	{
-		$tmp_pdo = PDO_MySQL::getInstance();
-		$where = array(
-			'where' => array(
-				'u_id' => $u_id
-			)
-		);
-		$result = $tmp_pdo->update(self::TABLE_NAME, $where, $user_data);
-		$tmp_pdo = null;
+		$collection = new Mongo_Collection(self::TABLE_NAME);
+		$where = [
+			'u_id' => $u_id
+		];
+		$result = $collection->update($where, $user_data);
 		return $result;
 	}
 

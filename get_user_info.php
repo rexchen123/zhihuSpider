@@ -10,9 +10,10 @@
 require_once './spider/user.php';
 require_once './function.php';
 require_once './spider/curl.php';
-require_once './spider/pdo_mysql.php';
+require_once './spider/mongo_collection.php';
 require_once './spider/predis.php';
 require_once './spider/log.php';
+
 //redis instance
 $redis = PRedis::getInstance();
 $redis->flushdb();
@@ -29,6 +30,8 @@ Log::setLogPath('./log');
 while (1)
 {
 	echo "--------begin get user info--------\n";
+	$redis = new Redis();
+	$redis->connect('127.0.0.1', '6379');
 	$total = $redis->llen('request_queue');
 	if ($total == 0)
 	{
@@ -58,7 +61,7 @@ while (1)
 
 				$user_followees_count = $tmp_redis->hget($tmp_u_id, 'followees_count');
 				$user_followers_count = $tmp_redis->hget($tmp_u_id, 'followers_count');
-				
+
 				if ($user_info['followees_count'] != $user_followees_count)
 				{
 					updateUserInfo($tmp_u_id);

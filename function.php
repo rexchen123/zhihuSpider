@@ -41,10 +41,10 @@ function getUserInfo($result)
 	preg_match('#<span class="content">\s(.*?)\s</span>#s', $result, $out);
 	$user['description'] = empty($out[1]) ? '' : trim(strip_tags($out[1]));
 
-	preg_match('#<span class="zg-gray-normal">关注了</span><br>\s<strong>(.*?)</strong><label> 人</label>#', $result, $out);
+	preg_match('#<span class="zg-gray-normal">关注了</span><br />\s<strong>(.*?)</strong><label> 人</label>#', $result, $out);
 	$user['followees_count'] = empty($out[1]) ? 0 : $out[1];
 
-	preg_match('#<span class="zg-gray-normal">关注者</span><br>\s<strong>(.*?)</strong><label> 人</label>#', $result, $out);
+	preg_match('#<span class="zg-gray-normal">关注者</span><br />\s<strong>(.*?)</strong><label> 人</label>#', $result, $out);
 	$user['followers_count'] = empty($out[1]) ? 0 : $out[1];
 
 	preg_match('#<strong>(.*?) 个专栏</strong>#', $result, $out);
@@ -97,13 +97,13 @@ function getImg($url, $u_id)
 	{
 		return '';
 	}
-    $context_options = array(  
-		'http' =>  
+    $context_options = array(
+		'http' =>
 		array(
-			'header' => "Referer:https://www.zhihu.com",  
+			'header' => "Referer:https://www.zhihu.com",
 	));
-	  
-	$context = stream_context_create($context_options);  
+
+	$context = stream_context_create($context_options);
 	$img = file_get_contents('http:' . $url, FALSE, $context);
 	file_put_contents('./images/' . $u_id . ".jpg", $img);
 	return "images/$u_id" . '.jpg';
@@ -125,12 +125,10 @@ function dealUserInfo($user_list, $u_id, $user_type = 'followees', $u_name)
 	}
 	foreach ($user_list as $user)
 	{
-		preg_match('#<h2 class="zm-list-content-title"><a data-tip=".*?" href="https://www.zhihu.com/people/(.*?)" class="zg-link" title="(.*?)">#', $user, $out);
-		$params = array(
-			'where' => array(
-				'u_id' => $out[1]
-			)
-		);
+		preg_match('#<h2 class="zm-list-content-title"><a data-tip=".*?" href="https://www.zhihu.com/people/(.*?)" class="zg-link" title="(.*?)"\s>#', $user, $out);
+		$params = [
+			'u_id' => $out[1]
+		];
 		if (!User::existed($params, 'user'))
 		{
 			$new_user_id_list[] = $out[1];
@@ -141,7 +139,7 @@ function dealUserInfo($user_list, $u_id, $user_type = 'followees', $u_name)
 		}
 		else
 		{
-			$info = array('', empty($out[1]) ? '' : $out[1], $u_id, empty($out[2]) ? '' : $out[2], $u_name);	
+			$info = array('', empty($out[1]) ? '' : $out[1], $u_id, empty($out[2]) ? '' : $out[2], $u_name);
 		}
 		array_push($info_list, $info);
 	}
@@ -166,8 +164,7 @@ function getOnePageUserList($result, $u_id, $user_type = 'followees', $count, $u
 {
 	$follow_user_list = array();
 	$user_list = array();
-	preg_match_all('#<h2 class="zm-list-content-title"><a data-tip=".*?" href="https://www.zhihu.com/people/(.*?)" class="zg-link" title="(.*?)">#', $result, $out);
-
+	preg_match_all('#<h2 class="zm-list-content-title"><a data-tip=".*?" href="https://www.zhihu.com/people/(.*?)" class="zg-link" title="(.*?)"\s>#', $result, $out);
 	$user_list = Curl::getMultiUser($out[1]);
 	for ($i = 0; $i < $count; $i++)
 	{
@@ -300,11 +297,9 @@ function getUserList($u_id, $user_type = 'followees', $count, $op_type)
  */
 function saveUserInfo($tmp_u_id)
 {
-	$params = array(
-		'where' => array(
-			'u_id' => $tmp_u_id
-		)
-	);
+	$params = [
+		'u_id' => $tmp_u_id
+	];
 	if (!User::existed($params, 'user'))
 	{
 		echo "--------found new user {$tmp_u_id}--------\n";
@@ -354,6 +349,6 @@ function updateUserInfo($tmp_u_id)
 	}
 	$current_user = getUserInfo($result);
 	unset($current_user['u_id']);
-	User::update($current_user, $tmp_u_id);
+	User::update(['$set' => $current_user], $tmp_u_id);
 	echo "--------update {$tmp_u_id} info done--------\n";
 }

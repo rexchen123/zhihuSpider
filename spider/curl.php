@@ -9,26 +9,23 @@ require_once './function.php';
 class Curl {
 
 	private static $cookie_arr = array(
-		'__utma' => '51854390.847096722.1463637721.1464335701.1464340069.13',
-		'__utmb' => '51854390.26.10.1464340069',
+		'__utma' => '51854390.1467381360.1466562190.1466562190.1466562190.1',
+		'__utmb' => '51854390.6.10.1466562190',
 		'__utmc' => '51854390',
-		'__utmv' => '51854390.100-1|2=registration_date=20141017=1^3=entry_date=20141017=1',
-		'__utmz' => '51854390.1464168187.9.3.utmcsr=google|utmccn=(organic)|utmcmd=organic|utmctr=(not%20provided)',
+		'__utmv' => '51854390.100--|2=registration_date=20160131=1^3=entry_date=20160131=1',
+		'__utmz' => '51854390.1466562190.1.1.utmcsr=baidu|utmccn=(organic)|utmcmd=organic',
 		'_xsrf' => 'adcfcf915f4506927b88d87646016dc2',
-		'_za' => 'a2889ef9-c598-4e96-8ab5-9ca0a9f42e7e',
-		'_zap' => '06c40d9b-e783-45c3-875b-b5def3690777',
-		'_zap' => '9349f159-e616-4d41-9799-11ee42b5c5eb',
-		'cap_id' => '"Y2ExNDNlMjU1MTk4NDRlYTgyMGZkMjc0NDBhNzliNTg=|1461919186|0dc2691feec234e052506642d742b21eb59be6e4"',
-		'd_c0' => '"AGAAuXZTsAmPTiftYaWT02M1JeAkw0ewo9w=|1459231862"',
-		'l_cap_id' => '"ZDI4ZjAzMTA3ODIxNGZmMWE3MmVlN2Q5OWMzYjhhZjY=|1461919186|84a64a2066181bd12069ecf4719366ac226e5da8"',
+		'_za' => 'e6745b34-4bee-4210-8cc3-f4b1399ef4f7',
+		'_zap' => 'd099074d-b768-4d89-8dc4-1ed604fbae81',
+		'cap_id' => '"ZTE5YWUzYjVkZTAwNDg3NWE1ODk0NGM0ZmUzN2RkYjQ=|1466562187|8f2d5199e713c8ef61ae919daca66ec928e38008"',
+		'd_c0' => '"AAAAZXCOHQqPTsM14o_2_2dqO3sGcdPPYuo=|1466562188"',
+		'l_cap_id' => '"ZGM3ZmMyOTlmZjYxNGRkMWI5MTQzMzJlZWJlOTNjYzk=|1466562187|25b1614b998e3c1353c0b85afd80cb75da99d67e"',
 		'l_n_c' => '1',
-		'login' => '"YjdjZjBmMmVlNTc1NDNlOGIxZDU5Yjg4MjhkZjJmZjU=|1461919194|a1cb43545b786305147c7c19b7b85111f810b4a5"',
-		'q_c1' => '21fd5f4d6c3541aa873163af7517ab8d|1461908846000|1459231862000',
-		's-i' => '6',
-		's-q' => '%E6%85%A2%E6%80%A7%E8%83%83%E7%82%8E',
-		's-t' => 'autocomplete',
-		'sid' => 'e63rlk6q',
-		'z_c0' => 'Mi4wQUFEQTRZbzZBQUFBWUFDNWRsT3dDUmNBQUFCaEFsVk4ycXBLVndCRktqRFFudXVaRzFyV3g1dUUwdkhsQ19UaEp3|1461919194|141c3c517d5be5e1e205e233f0d18c1f832a3806'
+		'login' => '"ZDdhOTMyMGY3MTFlNDU3M2FjMmM2M2FhYjFjZWJjOGY=|1466562209|060b806940a5709c91555b7eedd41fc1de44ee95"',
+		'q_c1' => '7a87de9d60334cd5a006bddb8d013034|1466562187000|1466562187000',
+		'n_c' => '1',
+		'a_t' => '"2.0ABAKkS6fZQkXAAAAooORVwAQCpEun2UJAAAAZXCOHQoXAAAAYQJVTaKDkVcAs0iW6XFoXbvBVm-A5efq2zL9Oj-75DcDI9Nl5zhIf65qA6buTKfbpA=="',
+		'z_c0' => 'Mi4wQUJBS2tTNmZaUWtBQUFCbGNJNGRDaGNBQUFCaEFsVk5vb09SVndDelNKYnBjV2hkdThGV2I0RGw1LXJiTXYwNlB3|1466562210|84fbea4af1cc1092828e592d0529162b7e7e9949',
 	);
 
 	private static function genCookie() {
@@ -89,7 +86,7 @@ class Curl {
 			curl_setopt($ch, CURLOPT_URL, 'http://www.zhihu.com/people/' . $user_list[$i] . '/about');
 			curl_setopt($ch, CURLOPT_COOKIE, self::genCookie());
 			curl_setopt($ch, CURLOPT_USERAGENT, 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/44.0.2403.130 Safari/537.36');
-			curl_setopt($ch, CURLOPT_RETURNTRANSFER, true); 
+			curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 			curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
 			$requestMap[$i] = $ch;
 			curl_multi_add_handle($mh, $ch);
@@ -98,7 +95,7 @@ class Curl {
 		$user_arr = array();
 		do {
 			while (($cme = curl_multi_exec($mh, $active)) == CURLM_CALL_MULTI_PERFORM);
-			
+
 			if ($cme != CURLM_OK) {break;}
 
 			while ($done = curl_multi_info_read($mh))
@@ -107,7 +104,7 @@ class Curl {
 				$tmp_result = curl_multi_getcontent($done['handle']);
 				$error = curl_error($done['handle']);
 
-				$user_arr[] = array_values(getUserInfo($tmp_result));
+				$user_arr[] = getUserInfo($tmp_result);
 
 				//保证同时有$max_size个请求在处理
 				if ($i < sizeof($user_list) && isset($user_list[$i]) && $i < count($user_list))
@@ -115,9 +112,9 @@ class Curl {
                 	$ch = curl_init();
 					curl_setopt($ch, CURLOPT_HEADER, 0);
 					curl_setopt($ch, CURLOPT_URL, 'http://www.zhihu.com/people/' . $user_list[$i] . '/about');
-					curl_setopt($ch, CURLOPT_COOKIE, self::$user_cookie);
+					curl_setopt($ch, CURLOPT_COOKIE, self::genCookie());
 					curl_setopt($ch, CURLOPT_USERAGENT, 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/44.0.2403.130 Safari/537.36');
-					curl_setopt($ch, CURLOPT_RETURNTRANSFER, true); 
+					curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 					curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
 					$requestMap[$i] = $ch;
 					curl_multi_add_handle($mh, $ch);
