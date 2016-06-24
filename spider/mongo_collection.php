@@ -71,4 +71,11 @@ class Mongo_Collection {
         $options = array_merge(['w' => 1, 'multiple' => true], $options);
         return $this->collection->update($conditions, $data, $options);
     }
+
+    public function aggregate($pipe)
+    {
+        $result = $this->collection->aggregate($pipe);
+
+        return empty($result['result']) ? [] : $result['result'];
+    }
 }

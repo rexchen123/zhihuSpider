@@ -132,14 +132,10 @@ class User {
 		return $result;
 	}
 
-	/**
-	 * [totalCount 返回用户总数量]
-	 * @return [type] [description]
-	 */
-	public static function totalCount()
+	public static function totalCount($condition = [])
 	{
 		$collection = new Mongo_Collection(self::TABLE_NAME);
-		$result = $collection->count(array());
+		$result = $collection->count($condition);
 		return $result;
 	}
 
@@ -153,57 +149,42 @@ class User {
 		return $result;
 	}
 
-	/**
-	 * [addressCountList 根据地区统计]
-	 * @return [type] [description]
-	 */
 	public static function addressCountList()
 	{
-		$tmp_pdo = PDO_MySQL::getInstance();
-		$conditions = array(
-			'fields' => 'address, count(*) as address_count',
-			'sort' => array('address_count' => 0),
-			'group_by' => 'address',
-			'limit' => 11
-		);
-		$result = $tmp_pdo->getAll(self::TABLE_NAME, $conditions);
-		$tmp_pdo = null;
+		$collection = new Mongo_Collection(self::TABLE_NAME);
+		$pipe = [
+			['$group' => ['_id' => '$address', 'address_count' => ['$sum' => 1]]],
+			['$project' => ['address_count' => 1, 'address' => '$_id']],
+			['$sort' => ['address_count' => -1]],
+			['$limit' => 11]
+		];
+		$result = $collection->aggregate($pipe);
 		return $result;
 	}
 
-	/**
-	 * [majorCountList 根据专业统计数量]
-	 * @return [type] [description]
-	 */
 	public static function majorCountList()
 	{
-		$tmp_pdo = PDO_MySQL::getInstance();
-		$conditions = array(
-			'fields' => 'major, count(*) as major_count',
-			'sort' => array('major_count' => 0),
-			'group_by' => 'major',
-			'limit' => 11
-		);
-		$result = $tmp_pdo->getAll(self::TABLE_NAME, $conditions);
-		$tmp_pdo = null;
+		$collection = new Mongo_Collection(self::TABLE_NAME);
+		$pipe = [
+			['$group' => ['_id' => '$major', 'major_count' => ['$sum' => 1]]],
+			['$project' => ['major_count' => 1, 'major' => '$_id']],
+			['$sort' => ['major_count' => -1]],
+			['$limit' => 11]
+		];
+		$result = $collection->aggregate($pipe);
 		return $result;
 	}
 
-	/**
-	 * [businessCountList 根据行业统计数量]
-	 * @return [type] [description]
-	 */
 	public static function businessCountList()
 	{
-		$tmp_pdo = PDO_MySQL::getInstance();
-		$conditions = array(
-			'fields' => 'business, count(*) as business_count',
-			'sort' => array('business_count' => 0),
-			'group_by' => 'business',
-			'limit' => 11
-		);
-		$result = $tmp_pdo->getAll(self::TABLE_NAME, $conditions);
-		$tmp_pdo = null;
+		$collection = new Mongo_Collection(self::TABLE_NAME);
+		$pipe = [
+			['$group' => ['_id' => '$business', 'business_count' => ['$sum' => 1]]],
+			['$project' => ['business_count' => 1, 'business' => '$_id']],
+			['$sort' => ['business_count' => -1]],
+			['$limit' => 11]
+		];
+		$result = $collection->aggregate($pipe);
 		return $result;
 	}
 }

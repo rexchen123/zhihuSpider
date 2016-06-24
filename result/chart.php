@@ -1,22 +1,17 @@
 <?php
-	require_once '../spider/pdo_mysql.php';
+	require_once '../spider/mongo_collection.php';
 	require_once '../spider/user.php';
-
 	//total_count
 	$total_count = User::totalCount();
 
-	$male_condition = array(
-		'where' => array(
-			'gender' => 'MALE'
-		)
-	);
+	$male_condition = [
+		'gender' => new MongoRegex('/^male$/i')
+	];
 	$male_count = User::totalCount($male_condition);
 
-	$female_condition = array(
-		'where' => array(
-			'gender' => 'FEMALE'
-		)
-	);
+	$female_condition = [
+		'gender' => new MongoRegex('/^female$/i')
+	];
 	$female_count = User::totalCount($female_condition);
 
 	$address_count_list = User::addressCountList();
@@ -28,6 +23,7 @@
 <!DOCTYPE html>
 <html>
 <head>
+	<meta charset="UTF-8">
 	<title>知乎用户分析</title>
 	<style type="text/css">
 		#gender_container {

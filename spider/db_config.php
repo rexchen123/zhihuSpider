@@ -13,5 +13,5 @@ return [
         'password' => 'root',
         'dbname' => 'zhihu',
         'option' => [],
-    ]
+    ],
 ];

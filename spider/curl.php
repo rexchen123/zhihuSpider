@@ -8,36 +8,18 @@
 require_once './function.php';
 class Curl {
 
-	private static $cookie_arr = array(
-		'__utma' => '51854390.1467381360.1466562190.1466562190.1466562190.1',
-		'__utmb' => '51854390.6.10.1466562190',
-		'__utmc' => '51854390',
-		'__utmv' => '51854390.100--|2=registration_date=20160131=1^3=entry_date=20160131=1',
-		'__utmz' => '51854390.1466562190.1.1.utmcsr=baidu|utmccn=(organic)|utmcmd=organic',
-		'_xsrf' => 'adcfcf915f4506927b88d87646016dc2',
-		'_za' => 'e6745b34-4bee-4210-8cc3-f4b1399ef4f7',
-		'_zap' => 'd099074d-b768-4d89-8dc4-1ed604fbae81',
-		'cap_id' => '"ZTE5YWUzYjVkZTAwNDg3NWE1ODk0NGM0ZmUzN2RkYjQ=|1466562187|8f2d5199e713c8ef61ae919daca66ec928e38008"',
-		'd_c0' => '"AAAAZXCOHQqPTsM14o_2_2dqO3sGcdPPYuo=|1466562188"',
-		'l_cap_id' => '"ZGM3ZmMyOTlmZjYxNGRkMWI5MTQzMzJlZWJlOTNjYzk=|1466562187|25b1614b998e3c1353c0b85afd80cb75da99d67e"',
-		'l_n_c' => '1',
-		'login' => '"ZDdhOTMyMGY3MTFlNDU3M2FjMmM2M2FhYjFjZWJjOGY=|1466562209|060b806940a5709c91555b7eedd41fc1de44ee95"',
-		'q_c1' => '7a87de9d60334cd5a006bddb8d013034|1466562187000|1466562187000',
-		'n_c' => '1',
-		'a_t' => '"2.0ABAKkS6fZQkXAAAAooORVwAQCpEun2UJAAAAZXCOHQoXAAAAYQJVTaKDkVcAs0iW6XFoXbvBVm-A5efq2zL9Oj-75DcDI9Nl5zhIf65qA6buTKfbpA=="',
-		'z_c0' => 'Mi4wQUJBS2tTNmZaUWtBQUFCbGNJNGRDaGNBQUFCaEFsVk5vb09SVndDelNKYnBjV2hkdThGV2I0RGw1LXJiTXYwNlB3|1466562210|84fbea4af1cc1092828e592d0529162b7e7e9949',
-	);
+	private static $cookie_arr = '';
+	private static $config_file_path = 'cookies_config.php';
 
 	private static function genCookie() {
-		$cookie = '';
-		foreach (self::$cookie_arr as $key => $value) {
-			if($key != 'z_c0')
-				$cookie .= $key . '=' . $value . ';';
-			else
-				$cookie .= $key . '=' . $value;
+		$cookiesConfig = require self::$config_file_path;
+		$cookie_arr = json_decode($cookiesConfig, true);
+		$cookies = '';
+		foreach ($cookie_arr as $cookie) {
+				$cookies .= $cookie['name'] . '=' . $cookie['value'] . ';';
 		}
 
-		return $cookie;
+		return $cookies;
 	}
 
 	/**
