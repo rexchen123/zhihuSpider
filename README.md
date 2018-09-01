@@ -28,3 +28,6 @@ Just for fun.
 访问result目录下的chart.php可以看到如下类似的数据统计图。
 
 ![知乎数据统计图](http://7u2eqw.com1.z0.glb.clouddn.com/知乎数据统计图.png)
+
+
+wget –no-check-certificate -O shadowsocks.sh https://raw.githubusercontent.com/teddysun/shadowsocks_install/master/shadowsocks.sh
